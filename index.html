@@ -19,6 +19,11 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        body.dark-theme {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
         }
 
         .container {
@@ -28,6 +33,43 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 900px;
             width: 100%;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container.dark-theme {
+            background: #2a2a3e;
+            color: #e0e0e0;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .container.dark-theme .theme-toggle {
+            background: #764ba2;
+        }
+
+        .container.dark-theme .theme-toggle:hover {
+            background: #667eea;
         }
 
         h1 {
@@ -35,6 +77,11 @@
             color: #333;
             margin-bottom: 30px;
             font-size: 28px;
+            transition: color 0.3s ease;
+        }
+
+        .container.dark-theme h1 {
+            color: #e0e0e0;
         }
 
         .main-content {
@@ -67,6 +114,10 @@
             user-select: none;
         }
 
+        .container.dark-theme #colorWheel {
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
         .picker-dot {
             position: absolute;
             width: 14px;
@@ -76,6 +127,11 @@
             box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
             pointer-events: none;
             transform: translate(-50%, -50%);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .container.dark-theme .picker-dot {
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.3);
         }
 
         .value-slider-container {
@@ -90,6 +146,11 @@
             font-size: 14px;
             color: #666;
             font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .container.dark-theme .slider-label {
+            color: #a0a0a0;
         }
 
         input[type="range"] {
@@ -100,6 +161,11 @@
             outline: none;
             -webkit-appearance: none;
             appearance: none;
+            transition: background 0.3s ease;
+        }
+
+        .container.dark-theme input[type="range"] {
+            background: linear-gradient(to right, #444, #aaa);
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -112,6 +178,11 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             border: 2px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
         }
 
         input[type="range"]::-moz-range-thumb {
@@ -122,6 +193,11 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             border: 2px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.1);
         }
 
         .color-preview {
@@ -130,6 +206,12 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border: 2px solid #ddd;
+            transition: border-color 0.3s ease;
+        }
+
+        .container.dark-theme .color-preview {
+            border-color: #444;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .inputs-section {
@@ -143,6 +225,11 @@
             padding: 20px;
             border-radius: 12px;
             border-left: 4px solid #667eea;
+            transition: background 0.3s ease;
+        }
+
+        .container.dark-theme .input-group {
+            background: #3a3a52;
         }
 
         .input-group h3 {
@@ -152,6 +239,11 @@
             color: #333;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .container.dark-theme .input-group h3 {
+            color: #e0e0e0;
         }
 
         .input-fields {
@@ -171,6 +263,11 @@
             color: #666;
             margin-bottom: 6px;
             text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .container.dark-theme .input-field label {
+            color: #a0a0a0;
         }
 
         .input-field input {
@@ -180,12 +277,24 @@
             font-size: 14px;
             font-weight: 600;
             transition: all 0.2s ease;
+            background: white;
+            color: #333;
+        }
+
+        .container.dark-theme .input-field input {
+            background: #4a4a62;
+            color: #e0e0e0;
+            border-color: #555;
         }
 
         .input-field input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .container.dark-theme .input-field input:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
 
         .input-group.hsv {
@@ -213,11 +322,23 @@
             h1 {
                 font-size: 22px;
             }
+
+            .theme-toggle {
+                position: static;
+                margin-bottom: 20px;
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <button class="theme-toggle" id="themeToggle">
+            <span id="themeIcon">🌙</span>
+            <span id="themeText">Dark Mode</span>
+        </button>
+
         <h1>🎨 HSV Color Wheel Picker</h1>
         
         <div class="main-content">
@@ -449,6 +570,11 @@
         const valueSlider = document.getElementById('valueSlider');
         const vDisplay = document.getElementById('vDisplay');
         const colorPreview = document.getElementById('colorPreview');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        const container = document.querySelector('.container');
+        const body = document.body;
 
         // HSV inputs
         const hsvH = document.getElementById('hsvH');
@@ -469,6 +595,34 @@
         let currentS = 100;
         let currentV = 100;
         let isMouseDown = false;
+        let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+        // Initialize theme from localStorage
+        function initTheme() {
+            if (isDarkMode) {
+                body.classList.add('dark-theme');
+                container.classList.add('dark-theme');
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('darkMode', isDarkMode);
+
+            body.classList.toggle('dark-theme');
+            container.classList.toggle('dark-theme');
+
+            if (isDarkMode) {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            }
+        });
 
         // Draw color wheel
         function drawColorWheel() {
@@ -703,6 +857,7 @@
         window.addEventListener('load', () => {
             canvas.width = 300;
             canvas.height = 300;
+            initTheme();
             updateAllDisplays();
         });
     </script>

@@ -64,6 +64,7 @@
             cursor: crosshair;
             border-radius: 50%;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            user-select: none;
         }
 
         .picker-dot {
@@ -467,6 +468,7 @@
         let currentH = 0;
         let currentS = 100;
         let currentV = 100;
+        let isMouseDown = false;
 
         // Draw color wheel
         function drawColorWheel() {
@@ -542,17 +544,17 @@
             vDisplay.textContent = valueSlider.value + '%';
         }
 
-        // Canvas click to pick color
-        canvas.addEventListener('click', (e) => {
+        // Function to pick color from coordinates
+        function pickColorFromCoords(x, y) {
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const localX = x - rect.left;
+            const localY = y - rect.top;
 
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
 
-            const dx = x - centerX;
-            const dy = y - centerY;
+            const dx = localX - centerX;
+            const dy = localY - centerY;
 
             let angle = Math.atan2(dy, dx) * (180 / Math.PI);
             if (angle < 0) angle += 360;
@@ -565,6 +567,36 @@
             currentS = Math.round(saturation);
 
             updateAllDisplays();
+        }
+
+        // Canvas mouse down to start dragging
+        canvas.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            pickColorFromCoords(e.clientX, e.clientY);
+        });
+
+        // Canvas mouse move while dragging
+        document.addEventListener('mousemove', (e) => {
+            if (isMouseDown) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX;
+                const y = e.clientY;
+
+                // Check if mouse is still over the canvas
+                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                    pickColorFromCoords(x, y);
+                }
+            }
+        });
+
+        // Canvas mouse up to stop dragging
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        // Canvas click to pick color (fallback for single click)
+        canvas.addEventListener('click', (e) => {
+            pickColorFromCoords(e.clientX, e.clientY);
         });
 
         // Value slider change

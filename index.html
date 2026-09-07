@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Picker</title>
+    <title>HSV Color Wheel Picker</title>
     <style>
         * {
             margin: 0;
@@ -142,7 +142,7 @@
             box-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 0 8px rgba(255, 255, 255, 0.3);
         }
 
-        .value-slider-container {
+        .slider-container {
             width: 100%;
             max-width: 300px;
         }
@@ -170,11 +170,21 @@
             -webkit-appearance: none;
             appearance: none;
             transition: background 0.3s ease;
+            margin-bottom: 16px;
         }
 
         .container.dark-theme input[type="range"] {
-            background: linear-gradient(to right, #000, #fff); 
-            /* background: linear-gradient(to right, #444, #aaa); */
+            background: linear-gradient(to right, #444, #aaa);
+        }
+
+        #alphaSlider {
+            background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.5)), 
+                        repeating-conic-gradient(#ccc 0% 25%, #999 0% 50%) 0% 0% / 10px 10px;
+        }
+
+        .container.dark-theme #alphaSlider {
+            background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)), 
+                        repeating-conic-gradient(#555 0% 25%, #333 0% 50%) 0% 0% / 10px 10px;
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -216,11 +226,27 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border: 2px solid #ddd;
             transition: border-color 0.3s ease;
+            background-image: repeating-conic-gradient(#ccc 0% 25%, #999 0% 50%);
+            background-size: 10px 10px;
+            background-position: 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
         }
 
         .container.dark-theme .color-preview {
             border-color: #444;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            background-image: repeating-conic-gradient(#555 0% 25%, #333 0% 50%);
         }
 
         .inputs-section {
@@ -318,6 +344,10 @@
             border-left-color: #4facfe;
         }
 
+        .input-group.rgba {
+            border-left-color: #ff6b9d;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -348,7 +378,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎨 Color Wheel Picker</h1>
+            <h1>🎨 HSV Color Wheel Picker</h1>
             <button class="theme-toggle" id="themeToggle">
                 <span id="themeIcon">🌙</span>
                 <span id="themeText">Dark Mode</span>
@@ -363,12 +393,20 @@
                     <div class="picker-dot" id="pickerDot"></div>
                 </div>
 
-                <div class="value-slider-container">
+                <div class="slider-container">
                     <div class="slider-label">
                         <span>Brightness (Value)</span>
                         <span id="vDisplay">100%</span>
                     </div>
                     <input type="range" id="valueSlider" min="0" max="100" value="100">
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Transparency (Alpha)</span>
+                        <span id="aDisplay">100%</span>
+                    </div>
+                    <input type="range" id="alphaSlider" min="0" max="100" value="100">
                 </div>
 
                 <div class="color-preview" id="colorPreview"></div>
@@ -429,6 +467,29 @@
                         <div class="input-field">
                             <label for="rgbB">B (0-255)</label>
                             <input type="number" id="rgbB" min="0" max="255" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RGBA Inputs -->
+                <div class="input-group rgba">
+                    <h3>RGBA</h3>
+                    <div class="input-fields">
+                        <div class="input-field">
+                            <label for="rgbaR">R (0-255)</label>
+                            <input type="number" id="rgbaR" min="0" max="255" value="255">
+                        </div>
+                        <div class="input-field">
+                            <label for="rgbaG">G (0-255)</label>
+                            <input type="number" id="rgbaG" min="0" max="255" value="0">
+                        </div>
+                        <div class="input-field">
+                            <label for="rgbaB">B (0-255)</label>
+                            <input type="number" id="rgbaB" min="0" max="255" value="0">
+                        </div>
+                        <div class="input-field">
+                            <label for="rgbaA">A (0-100)</label>
+                            <input type="number" id="rgbaA" min="0" max="100" value="100">
                         </div>
                     </div>
                 </div>
@@ -583,6 +644,8 @@
         const pickerDot = document.getElementById('pickerDot');
         const valueSlider = document.getElementById('valueSlider');
         const vDisplay = document.getElementById('vDisplay');
+        const alphaSlider = document.getElementById('alphaSlider');
+        const aDisplay = document.getElementById('aDisplay');
         const colorPreview = document.getElementById('colorPreview');
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
@@ -605,9 +668,16 @@
         const rgbG = document.getElementById('rgbG');
         const rgbB = document.getElementById('rgbB');
 
+        // RGBA inputs
+        const rgbaR = document.getElementById('rgbaR');
+        const rgbaG = document.getElementById('rgbaG');
+        const rgbaB = document.getElementById('rgbaB');
+        const rgbaA = document.getElementById('rgbaA');
+
         let currentH = 0;
         let currentS = 100;
         let currentV = 100;
+        let currentA = 100;
         let isMouseDown = false;
         let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
@@ -690,7 +760,8 @@
 
             // Update preview
             const [r, g, b] = ColorConverter.hsvToRgb(currentH, currentS, currentV);
-            colorPreview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+            const alpha = currentA / 100;
+            colorPreview.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
 
             // Update HSV inputs
             hsvH.value = currentH;
@@ -708,8 +779,15 @@
             rgbG.value = g;
             rgbB.value = b;
 
-            // Update V display
+            // Update RGBA inputs
+            rgbaR.value = r;
+            rgbaG.value = g;
+            rgbaB.value = b;
+            rgbaA.value = currentA;
+
+            // Update V and A display
             vDisplay.textContent = valueSlider.value + '%';
+            aDisplay.textContent = alphaSlider.value + '%';
         }
 
         // Function to pick color from coordinates
@@ -770,6 +848,12 @@
         // Value slider change
         valueSlider.addEventListener('input', (e) => {
             currentV = parseInt(e.target.value);
+            updateAllDisplays();
+        });
+
+        // Alpha slider change
+        alphaSlider.addEventListener('input', (e) => {
+            currentA = parseInt(e.target.value);
             updateAllDisplays();
         });
 
@@ -864,6 +948,50 @@
             currentS = sNew;
             currentV = vNew;
             valueSlider.value = currentV;
+            updateAllDisplays();
+        });
+
+        // RGBA input changes
+        rgbaR.addEventListener('input', (e) => {
+            const r = Math.max(0, Math.min(255, parseInt(e.target.value) || 0));
+            const g = parseInt(rgbaG.value) || 0;
+            const b = parseInt(rgbaB.value) || 0;
+            const [hNew, sNew, vNew] = ColorConverter.rgbToHsv(r, g, b);
+            currentH = hNew;
+            currentS = sNew;
+            currentV = vNew;
+            valueSlider.value = currentV;
+            updateAllDisplays();
+        });
+
+        rgbaG.addEventListener('input', (e) => {
+            const r = parseInt(rgbaR.value) || 0;
+            const g = Math.max(0, Math.min(255, parseInt(e.target.value) || 0));
+            const b = parseInt(rgbaB.value) || 0;
+            const [hNew, sNew, vNew] = ColorConverter.rgbToHsv(r, g, b);
+            currentH = hNew;
+            currentS = sNew;
+            currentV = vNew;
+            valueSlider.value = currentV;
+            updateAllDisplays();
+        });
+
+        rgbaB.addEventListener('input', (e) => {
+            const r = parseInt(rgbaR.value) || 0;
+            const g = parseInt(rgbaG.value) || 0;
+            const b = Math.max(0, Math.min(255, parseInt(e.target.value) || 0));
+            const [hNew, sNew, vNew] = ColorConverter.rgbToHsv(r, g, b);
+            currentH = hNew;
+            currentS = sNew;
+            currentV = vNew;
+            valueSlider.value = currentV;
+            updateAllDisplays();
+        });
+
+        rgbaA.addEventListener('input', (e) => {
+            currentA = Math.max(0, Math.min(100, parseInt(e.target.value) || 0));
+            rgbaA.value = currentA;
+            alphaSlider.value = currentA;
             updateAllDisplays();
         });
 

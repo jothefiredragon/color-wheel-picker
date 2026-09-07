@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSV Color Wheel Picker</title>
+    <title>Color Picker</title>
     <style>
         * {
             margin: 0;
@@ -173,7 +173,8 @@
         }
 
         .container.dark-theme input[type="range"] {
-            background: linear-gradient(to right, #444, #aaa);
+            background: linear-gradient(to right, #000, #fff); 
+            /* background: linear-gradient(to right, #444, #aaa); */
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -347,7 +348,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎨 HSV Color Wheel Picker</h1>
+            <h1>🎨 Color Wheel Picker</h1>
             <button class="theme-toggle" id="themeToggle">
                 <span id="themeIcon">🌙</span>
                 <span id="themeText">Dark Mode</span>
